@@ -10,7 +10,7 @@
 # library(janitor)
 
 # Set working directory (if not using R projects)
-setwd("C:/Users/Sergio/Downloads/R Projects/analyzing-support-performance")
+setwd("C:/Users/Sergio/Downloads/R Projects/Weekly-Support-Metric-Review/")
 
 # Read raw data
 df <- read.csv("./data/raw/2023-08-01 2024-08-01 All Channels Report.csv")
