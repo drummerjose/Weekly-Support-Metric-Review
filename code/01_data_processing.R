@@ -1,5 +1,5 @@
 # Script: 01_data_preprocessing.R
-# Purpose: Clean and preprocess the raw helspcout CSV data for analysis.
+# Purpose: Filter out unnecessary records and columns and add new data points. Then it can be exported to CSV.
 # Author: Jose Teran
 # Date: 2024-09-17
 # Description: This script loads raw data, cleans it, and prepares it for analysis.
@@ -15,13 +15,13 @@ setwd("C:/Users/Sergio/Downloads/R Projects/Weekly-Support-Metric-Review/")
 # Read raw data
 df <- read.csv("./data/raw/2023-08-01 2024-08-01 All Channels Report.csv")
 
-#--------------------Data Exploration-----------------
+#--------------------Initial Data Exploration-----------------
 # str(df)
 # summary(df)
 # head(df)
 # colnames(df)
 
-#--------------------Data Cleaning-----------------
+#--------------------Data Filtering-----------------
 # Update column names and filter records by mailbox and closed_by
 clean_df <- df %>% 
   janitor::clean_names() %>%
@@ -32,7 +32,7 @@ clean_df <- df %>%
 clean_df <- clean_df %>%
   select(-matches("zen|forms_team"), -mailbox, -bcc)
 
-# Remove "_lightningstepsupport" from all column names
+# Rename colnames by removing "_lightningstepsupport" from all column names for easier reading
 colnames(clean_df) <- gsub("_lightningstepsupport", "", colnames(clean_df))
 
 #--------------------Data Transformation and Feature Engineering-----------------
@@ -57,7 +57,7 @@ clean_df <- clean_df %>%
     created_at_hour = hour(created_at_datetime)
   )
 
-# remove text created_at column
+# remove created_at column from dataset
 clean_df <- clean_df %>%
   select(-created_at)
 
@@ -81,7 +81,7 @@ clean_df <- clean_df %>%
     closed_at_hour = hour(closed_at_datetime)
   )
 
-# remove text created_at column
+# remove created_at column from dataset
 clean_df <- clean_df %>%
   select(-closed_at)
 
@@ -104,11 +104,6 @@ clean_df <- clean_df %>%
     )
   )
 
-# #--------------------Data Export-----------------
+# #--------------------Export Data-----------------
 # # Export the cleaned data
 # write_csv(clean_df, "./data/processed/clean_data.csv")
-
-#--------------------Filter Cleaned Data -----------------
-# Filter tickets created in 2024
-data_2024 <- clean_df %>%
-  filter(created_at_date >= "2024-01-01")
