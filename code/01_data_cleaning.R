@@ -6,8 +6,8 @@
 # Usage: Run this script before any analysis.
 
 # Load necessary libraries
-# library(tidyverse)
-# library(janitor)
+library(tidyverse)
+library(janitor)
 
 # Set working directory (if not using R projects)
 setwd("C:/Users/Sergio/Downloads/R Projects/Weekly-Support-Metric-Review/")
@@ -111,10 +111,10 @@ clean_df <- clean_df %>%
 clean_df$orgcode <- tolower(clean_df$orgcode)
 
 # * * Search for orgcode values with count occurrences equal to one
-one_count_occurrences_orgcode <- clean_df %>%
-  group_by(orgcode) %>%
-  summarise(count = n()) %>%
-  filter(count == 1)
+# one_count_occurrences_orgcode <- clean_df %>%
+#   group_by(orgcode) %>%
+#   summarise(count = n()) %>%
+#   filter(count == 1)
 
 # * * Create a replacement vector
 replacement_orgcodes <- c("abh" = "abhaya",
@@ -411,6 +411,56 @@ clean_df <- clean_df %>%
     TRUE ~ orgcode  # Keep other values unchanged
   ))
 
+# * Mark excluded orgcodes that aren't LS Support tickets  -------------------------------------------------------------
+clean_df <- clean_df %>%
+  mutate(orgcode = case_when(
+    orgcode %in% c("?", 
+                   "??",
+                   "all",
+                   "all servers",
+                   "ctc",
+                   "ctc.zencharts.com",
+                   "ctm", #zen
+                   "dominion",
+                   "donovan",
+                   "ds", #dosespot
+                   "dup",
+                   "duplicate",
+                   "eedc",
+                   "error",
+                   "etc",
+                   "globalpay",
+                   "gmail",
+                   "ignore",
+                   "infinite", #ls server not found in list
+                   "internal",
+                   "lab", #dominion
+                   "labs", #dominion
+                   "lovett",
+                   "millenium", #labs
+                   "millennium", #labs
+                   "mjr", #zen
+                   "mycp", #zen
+                   "n/a",
+                   "na",
+                   "nlw", #zen incorrect code
+                   "none", #non LS Users
+                   "other", #request from old servers
+                   "ps", #paysimple
+                   "qualitox laboratories", #lab
+                   "real deal", #zen
+                   "scientific lab", #lab
+                   "source", #zen
+                   "spam", #spam
+                   "stewardsofrecovery.zencharts.com", #zen
+                   "stonegate", #zen
+                   "tco - zen", #zen
+                   "unknown", #non LS user
+                   "waystar", 
+                   "zen", #zen
+                   "zencharts") ~ "99999",
+    TRUE ~ orgcode  # Keep other values unchanged
+  ))
 
 # #--------------------Export Data-----------------
 # # Export the cleaned data

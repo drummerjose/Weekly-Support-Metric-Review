@@ -88,3 +88,16 @@ dim_ticket_status <- fact_support_ticket %>%
 fact_support_ticket <- fact_support_ticket %>%
   left_join(dim_ticket_status, by = "status") %>%
   select(-status)
+
+# Ticket type Dimension table -------------------------------------
+# Format text as title
+fact_support_ticket$type <- str_to_title(fact_support_ticket$type)
+
+dim_ticket_attributes <- fact_support_ticket %>% # create dim table
+  select(conversation, conversation_url, type, subject, tags, saved_replies, workflows, cc, current_status, due_date, origin, other) %>%
+  rename(conversation_id = conversation)
+
+# Correct error
+fact_support_ticket <- fact_support_ticket %>%
+  left_join(dim_ticket_attributes, by = c("conversation" = 'conversation_id')) %>%
+  select(-conversation_url, -type, -subject, -tags, -saved_replies, -workflows, -cc, -current_status, -due_date, -origin, -other)
