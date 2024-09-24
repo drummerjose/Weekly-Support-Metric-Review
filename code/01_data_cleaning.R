@@ -10,10 +10,13 @@ library(tidyverse)
 library(janitor)
 
 # Set working directory (if not using R projects)
-setwd("C:/Users/Sergio/Downloads/R Projects/Weekly-Support-Metric-Review/")
+# setwd("C:/Users/Sergio/Downloads/R Projects/Weekly-Support-Metric-Review/") # LS Laptop
+
+setwd("C:/Users/joe/Desktop/Weekly Support Metric Review/") # Dell Laptop
+
 
 # Read raw data
-df <- read.csv("./data/raw/2023-08-01 2024-08-01 All Channels Report.csv")
+df <- read.csv("./data/raw/2024-01-01 2024-09-24 All Channels Report.csv")
 
 #--------------------Initial Data Exploration-----------------
 # str(df)
@@ -461,6 +464,11 @@ clean_df <- clean_df %>%
                    "zencharts") ~ "99999",
     TRUE ~ orgcode  # Keep other values unchanged
   ))
+
+# 2024 financial tickets
+financial_tickets_2024 <- clean_df %>%
+  filter(created_at_date >= "2024-01-01",
+         area == "FINANCE")
 
 # #--------------------Export Data-----------------
 # # Export the cleaned data
