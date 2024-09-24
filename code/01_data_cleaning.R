@@ -13,7 +13,7 @@ library(janitor)
 setwd("C:/Users/Sergio/Downloads/R Projects/Weekly-Support-Metric-Review/")
 
 # Read raw data
-df <- read.csv("./data/raw/2023-08-01 2024-08-01 All Channels Report.csv")
+df <- read.csv("./data/raw/2024-01-01 2024-09-22 All Channels Report.csv")
 
 #--------------------Initial Data Exploration-----------------
 # str(df)
