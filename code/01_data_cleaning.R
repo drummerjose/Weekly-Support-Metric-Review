@@ -16,11 +16,7 @@ setwd("C:/Users/joe/Desktop/Weekly Support Metric Review/") # Dell Laptop
 
 
 # Read raw data
-<<<<<<< HEAD
 df <- read.csv("./data/raw/2024-01-01 2024-09-22 All Channels Report.csv")
-=======
-df <- read.csv("./data/raw/2024-01-01 2024-09-24 All Channels Report.csv")
->>>>>>> 3cd787cf2eeffbb1cc1cec1b82be4e3e85df2f79
 
 #--------------------Initial Data Exploration-----------------
 # str(df)
