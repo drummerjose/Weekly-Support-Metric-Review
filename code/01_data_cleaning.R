@@ -13,16 +13,16 @@ library(janitor)
 # setwd("C:/Users/Sergio/Downloads/R Projects/Weekly-Support-Metric-Review/") # LS Laptop
 
 setwd("C:/Users/joe/Desktop/Weekly Support Metric Review/") # Dell Laptop
+setwd("C:/Users/Sergio/Downloads/R Projects/Weekly-Support-Metric-Review/") # LS Laptop
 
-
-# Read raw data
-df <- read.csv("./data/raw/2024-01-01 2024-09-22 All Channels Report.csv")
+# Read exported data from Helpscout
+df <- read.csv("./data/raw/2024-01-01 2024-09-22 All Channels Report.csv") # Dell Laptop
+df <- read.csv("./data/raw/2024-10-31 2024-11-07 All Channels Report.csv") # LS Laptop
 
 #--------------------Initial Data Exploration-----------------
 # str(df)
 # summary(df)
 # head(df)
-# colnames(df)
 
 #--------------------Data Filtering-----------------
 # Update column names and filter records by mailbox and closed_by
@@ -31,12 +31,19 @@ clean_df <- df %>%
   filter(mailbox == 'lightningstepsupport' & closed_by != 'Lightning Step Support') %>%
   filter(assignee %in% c("Enrique Carreno", "Jose Teran", "David Benalcazar", "Nicolas Jaramillo","Daniel Freire", "Felipe Chiriboga", "Javier Galarza", "Thomas Hansen", "Kristofer Gerlach"))
 
+# Test
+table(clean_df$closed_by)
+table(clean_df$assignee)
+
+#--------------------Column Corrections-----------------
 # Remove Zen and Form columns, and columns: mailbox, bcc
 clean_df <- clean_df %>%
   select(-matches("zen|forms_team"), -mailbox, -bcc)
 
 # Rename colnames by removing "_lightningstepsupport" from all column names for easier reading
 colnames(clean_df) <- gsub("_lightningstepsupport", "", colnames(clean_df))
+
+colnames(clean_df)
 
 #--------------------Data Transformation and Feature Engineering-----------------
 # Convert data types
@@ -92,6 +99,9 @@ clean_df <- clean_df %>%
 clean_df <- clean_df %>%
   mutate(
     rating_comments = as.integer(rating_comments == 'y'),
+    rating_bad = ifelse(str_detect(ratings, "bad"), 1, 0),
+    rating_okay = ifelse(str_detect(ratings, "okay"), 1, 0),
+    rating_great = ifelse(str_detect(ratings, "great"), 1, 0),
     resolved = as.integer(resolved == 'y'),
     resolved_on_first_reply = as.integer(resolved_on_first_reply == 'y'),
     isjira = ifelse(str_detect(tags, "jira"), 1, 0), # Add isjira column
@@ -114,10 +124,12 @@ clean_df <- clean_df %>%
 clean_df$orgcode <- tolower(clean_df$orgcode)
 
 # * * Search for orgcode values with count occurrences equal to one
-# one_count_occurrences_orgcode <- clean_df %>%
-#   group_by(orgcode) %>%
-#   summarise(count = n()) %>%
-#   filter(count == 1)
+one_count_occurrences_orgcode <- clean_df %>%
+  group_by(orgcode) %>%
+  summarise(count = n()) %>%
+  filter(count == 1)
+
+print(one_count_occurrences_orgcode, n=50)
 
 # * * Create a replacement vector
 replacement_orgcodes <- c("abh" = "abhaya",
@@ -465,11 +477,10 @@ clean_df <- clean_df %>%
     TRUE ~ orgcode  # Keep other values unchanged
   ))
 
-# 2024 financial tickets
-financial_tickets_2024 <- clean_df %>%
-  filter(created_at_date >= "2024-01-01",
-         area == "FINANCE")
+# #--------------------Filter Financial Tickets-----------------
+financial_tickets <- clean_df %>%
+  filter(area == "FINANCE")
 
 # #--------------------Export Data-----------------
 # # Export the cleaned data
-# write_csv(clean_df, "./data/processed/clean_data.csv")
+write_csv(clean_df, "./data/processed/sample_test_data.csv")
