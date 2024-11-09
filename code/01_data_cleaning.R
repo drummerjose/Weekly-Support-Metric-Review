@@ -50,8 +50,8 @@ colnames(clean_df)
 # created_at date columns
 clean_df <- clean_df %>%
   mutate(
-    created_at_datetime = ymd_hms(created_at),
-    created_at_date = as.Date(created_at_datetime),
+    created_at_datetime = ymd_hms(created_at, tz = "UTC"),
+    created_at_date = as_date(created_at_datetime),
     created_at_year = year(created_at_date),
     created_at_quarter = quarter(created_at_date),
     created_at_month = month(created_at_date),
@@ -74,8 +74,8 @@ clean_df <- clean_df %>%
 # closed_at date columns
 clean_df <- clean_df %>%
   mutate(
-    closed_at_datetime = ymd_hms(closed_at),
-    closed_at_date = as.Date(closed_at_datetime),
+    closed_at_datetime = ymd_hms(closed_at, tz = "UTC"),
+    closed_at_date = as_date(closed_at_datetime),
     closed_at_year = year(closed_at_date),
     closed_at_quarter = quarter(closed_at_date),
     closed_at_month = month(closed_at_date),
@@ -95,7 +95,7 @@ clean_df <- clean_df %>%
 clean_df <- clean_df %>%
   select(-closed_at)
 
-# Enrich cleaned_df
+#--------------------Enrich Dataset-----------------
 clean_df <- clean_df %>%
   mutate(
     rating_comments = as.integer(rating_comments == 'y'),
@@ -104,6 +104,7 @@ clean_df <- clean_df %>%
     rating_great = ifelse(str_detect(ratings, "great"), 1, 0),
     resolved = as.integer(resolved == 'y'),
     resolved_on_first_reply = as.integer(resolved_on_first_reply == 'y'),
+    islsstaff = ifelse(str_detect(customer_email_addresses, "lightningstep.com"), 1, 0),
     isjira = ifelse(str_detect(tags, "jira"), 1, 0), # Add isjira column
     support_team_assignee = case_when(
       assignee %in% c("Jose Teran", "David Benalcazar", "Nicolas Jaramillo") ~ "Financial",
@@ -477,10 +478,15 @@ clean_df <- clean_df %>%
     TRUE ~ orgcode  # Keep other values unchanged
   ))
 
-# #--------------------Filter Financial Tickets-----------------
-financial_tickets <- clean_df %>%
-  filter(area == "FINANCE")
+# Removed NA values
+clean_df <- clean_df %>% mutate_all(~ ifelse(is.na(.), "", .))
+
+head(clean_df)
 
 # #--------------------Export Data-----------------
 # # Export the cleaned data
 write_csv(clean_df, "./data/processed/sample_test_data.csv")
+
+# #--------------------Filter Financial Tickets-----------------
+financial_tickets <- clean_df %>%
+  filter(area == "FINANCE")
