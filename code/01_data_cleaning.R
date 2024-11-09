@@ -12,11 +12,11 @@ library(janitor)
 # Set working directory (if not using R projects)
 # setwd("C:/Users/Sergio/Downloads/R Projects/Weekly-Support-Metric-Review/") # LS Laptop
 
-setwd("C:/Users/joe/Desktop/Weekly Support Metric Review/") # Dell Laptop
+# setwd("C:/Users/joe/Desktop/Weekly Support Metric Review/") # Dell Laptop
 setwd("C:/Users/Sergio/Downloads/R Projects/Weekly-Support-Metric-Review/") # LS Laptop
 
 # Read exported data from Helpscout
-df <- read.csv("./data/raw/2024-01-01 2024-09-22 All Channels Report.csv") # Dell Laptop
+# df <- read.csv("./data/raw/2024-01-01 2024-09-22 All Channels Report.csv") # Dell Laptop
 df <- read.csv("./data/raw/2024-10-31 2024-11-07 All Channels Report.csv") # LS Laptop
 
 #--------------------Initial Data Exploration-----------------
@@ -32,8 +32,8 @@ clean_df <- df %>%
   filter(assignee %in% c("Enrique Carreno", "Jose Teran", "David Benalcazar", "Nicolas Jaramillo","Daniel Freire", "Felipe Chiriboga", "Javier Galarza", "Thomas Hansen", "Kristofer Gerlach"))
 
 # Test
-table(clean_df$closed_by)
-table(clean_df$assignee)
+# table(clean_df$closed_by)
+# table(clean_df$assignee)
 
 #--------------------Column Corrections-----------------
 # Remove Zen and Form columns, and columns: mailbox, bcc
@@ -43,7 +43,7 @@ clean_df <- clean_df %>%
 # Rename colnames by removing "_lightningstepsupport" from all column names for easier reading
 colnames(clean_df) <- gsub("_lightningstepsupport", "", colnames(clean_df))
 
-colnames(clean_df)
+# colnames(clean_df)
 
 #--------------------Data Transformation and Feature Engineering-----------------
 # Convert data types
@@ -125,12 +125,12 @@ clean_df <- clean_df %>%
 clean_df$orgcode <- tolower(clean_df$orgcode)
 
 # * * Search for orgcode values with count occurrences equal to one
-one_count_occurrences_orgcode <- clean_df %>%
-  group_by(orgcode) %>%
-  summarise(count = n()) %>%
-  filter(count == 1)
+# one_count_occurrences_orgcode <- clean_df %>%
+#   group_by(orgcode) %>%
+#   summarise(count = n()) %>%
+#   filter(count == 1)
 
-print(one_count_occurrences_orgcode, n=50)
+# print(one_count_occurrences_orgcode, n=50)
 
 # * * Create a replacement vector
 replacement_orgcodes <- c("abh" = "abhaya",
@@ -479,14 +479,24 @@ clean_df <- clean_df %>%
   ))
 
 # Removed NA values
-clean_df <- clean_df %>% mutate_all(~ ifelse(is.na(.), "", .))
+# clean_df <- clean_df %>% mutate_all(~ ifelse(is.na(.), "", .))
 
-head(clean_df)
+# Convert specified columns to integer, handling blanks as NA
+clean_df <- clean_df %>%
+  mutate(across(
+    c(thread_count, saved_replies, first_response_time_seconds, 
+      first_response_time_office_hours_seconds, avg_response_time_seconds, 
+      avg_response_time_office_hours_seconds, replies_sent, handle_time_seconds, 
+      resolution_time_seconds, resolution_time_office_hours_seconds),
+    ~ as.integer(ifelse(. == "", NA, .))
+  ))
+
+# head(clean_df)
 
 # #--------------------Export Data-----------------
 # # Export the cleaned data
-write_csv(clean_df, "./data/processed/sample_test_data.csv")
+# write_csv(clean_df, "./data/processed/sample_test_data.csv")
 
 # #--------------------Filter Financial Tickets-----------------
-financial_tickets <- clean_df %>%
-  filter(area == "FINANCE")
+# financial_tickets <- clean_df %>%
+#   filter(area == "FINANCE")
