@@ -2,10 +2,15 @@
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+library(stringr)
 
 # Assuming clean_df is already available
+# tickets_data <- clean_df %>%
+#   filter(created_at_date >= "2024-10-31") %>%
+#   filter(str_detect(tags, "jira"))
+
 tickets_data <- clean_df %>%
-  filter(created_at_date >= "2024-10-31")
+    filter(str_detect(tags, "jira"))
 
 # 1. Count tickets created by day
 created_counts <- tickets_data %>%

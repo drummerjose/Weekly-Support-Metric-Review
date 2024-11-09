@@ -8,6 +8,7 @@
 # Load necessary libraries
 library(tidyverse)
 library(janitor)
+library(lubridate)
 
 # Set working directory (if not using R projects)
 # setwd("C:/Users/Sergio/Downloads/R Projects/Weekly-Support-Metric-Review/") # LS Laptop
@@ -16,8 +17,8 @@ library(janitor)
 setwd("C:/Users/Sergio/Downloads/R Projects/Weekly-Support-Metric-Review/") # LS Laptop
 
 # Read exported data from Helpscout
-# df <- read.csv("./data/raw/2024-01-01 2024-09-22 All Channels Report.csv") # Dell Laptop
-df <- read.csv("./data/raw/2024-10-31 2024-11-07 All Channels Report.csv") # LS Laptop
+df <- read.csv("./data/raw/2024-01-01 2024-09-22 All Channels Report.csv") # Dell Laptop
+# df <- read.csv("./data/raw/2024-10-31 2024-11-07 All Channels Report.csv") # LS Laptop
 
 #--------------------Initial Data Exploration-----------------
 # str(df)

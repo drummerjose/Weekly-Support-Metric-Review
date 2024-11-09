@@ -1,7 +1,7 @@
 # Financial Inflow pattern
 
 # Step 1: Create columns for day of week and hour
-ticket_inflow_patterns <- financial_tickets_2024
+ticket_inflow_patterns <- financial_tickets
 
 # Step 2: Summarize the number of tickets by day of week and hour
 ticket_inflow_summary <- ticket_inflow_patterns %>%

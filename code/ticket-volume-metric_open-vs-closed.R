@@ -1,13 +1,13 @@
 # Financial Ticket Volume
 
 # Create a summary of tickets created by month
-financial_tickets_created <- financial_tickets_2024 %>%
+financial_tickets_created <- financial_tickets %>%
   group_by(created_at_year_month) %>%
   summarise(tickets_created = n()) %>%
   ungroup()
 
 # Create a summary of tickets closed by month
-financial_tickets_closed <- financial_tickets_2024 %>%
+financial_tickets_closed <- financial_tickets %>%
   filter(status == "closed") %>%
   group_by(closed_at_year_month) %>%
   summarise(tickets_closed = n()) %>%

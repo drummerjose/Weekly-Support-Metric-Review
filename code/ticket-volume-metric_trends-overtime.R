@@ -1,7 +1,7 @@
 # trends over time
 
 # weekly
-weekly_summary <- financial_tickets_2024 %>%
+weekly_summary <- financial_tickets %>%
   group_by(created_at_week) %>%
   summarise(weekly_tickets_created = n())
 
@@ -18,7 +18,7 @@ ggplot(weekly_summary, aes(x = created_at_week, y = weekly_tickets_created)) +
   theme(axis.text.x = element_text(hjust = 1))  # Rotate x-axis labels
 
 # monthly
-monthly_summary <- financial_tickets_2024 %>%
+monthly_summary <- financial_tickets %>%
   group_by(created_at_month) %>%
   summarise(monthly_tickets_created = n())
 
